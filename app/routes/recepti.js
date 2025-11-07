@@ -58,6 +58,56 @@ router.post('/', (req, res)=>{
     return res.status(201).json(recepti)
 })
 
+router.put('/:id', (req, res)=>{
+    const id_recept= req.params.id
+
+    const novi_recept= req.body
+
+    novi_recept.id= id_recept
+
+    const index= recepti.findIndex(r => r.id==id_recept)
+
+    if(index == -1){
+        return res.status(404).json({greska: `Recept sa id-em ${id_recept} ne postoji`})
+    }
+
+    if(novi_recept.id_korisnik != recepti[index].id_korisnik){
+        return res.status(400).json({greska: 'Ne smijete mijenjati korisnika koji je napisao recept'})
+    }
+
+    recepti[index]={
+        id:id_recept,
+        ...novi_recept
+    }
+
+    return res.status(200).json(recepti)
+})
+
+router.patch('/:id', (req, res)=>{
+    const recept_id= req.params.id
+
+    const novi_recept= req.body
+
+    novi_recept.id=recept_id
+
+    const index= recepti.findIndex(r => r.id==recept_id)
+
+    if(index == -1){
+        return res.status(404).json({greska: `Recept sa id-em ${id_recept} ne postoji`})
+    }
+
+    if('id_korisnik' in novi_recept && 
+    novi_recept.id_korisnik != recepti[index].id_korisnik){
+        return res.status(400).json({greska: 'Ne smijete mijenjati korisnika koji je napisao recept'})
+    }
+
+    for(let k in novi_recept){
+        recepti[index][k]=novi_recept[k]
+    }
+
+    return res.status(200).json(recepti)
+})
+
 router.delete('/:id', (req, res)=>{
     const recept_id= req.params.id
 
