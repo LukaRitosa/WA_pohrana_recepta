@@ -38,6 +38,26 @@ router.get('/korisnik/:id', (req, res)=>{
     return res.status(200).json({korisnik, recepti: korisnikovi_recepti})
 })
 
+router.post('/', (req, res)=>{
+    const novi_recept= req.body
+
+    const dozvoljeni_kljucevi= ['id_korisnik', 'naziv', 'opis', 'sastojci', 'upute', 'kategorija']
+
+    const kljucevi_recepta=Object.keys(novi_recept)
+
+    const krivi_kljucevi=kljucevi_recepta.some(r => !dozvoljeni_kljucevi.includes(r))
+
+    if(krivi_kljucevi){
+        return res.status(400).json({greska: 'Krivi oblik recepta'})
+    }
+
+    const novi_id=recepti.at(-1)['id'] + 1
+
+    recepti.push({id: novi_id, ...novi_recept})
+
+    return res.status(201).json(recepti)
+})
+
 router.delete('/:id', (req, res)=>{
     const recept_id= req.params.id
 
