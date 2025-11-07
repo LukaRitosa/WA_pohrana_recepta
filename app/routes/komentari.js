@@ -67,7 +67,7 @@ router.post('/', (req, res)=>{
 })
 
 router.delete('/:id', (req, res)=>{
-    const id_komentar= req.params.id
+    const id_komentar= parseInt(req.params.id)
 
     const index= komentari.findIndex(k => k.id==id_komentar)
 
@@ -75,10 +75,29 @@ router.delete('/:id', (req, res)=>{
         return res.status(404).json({greska: 'Ne možete obrisati ne postojeći komentar'})
     }
 
-    let thread= komentari.filter(k => k.odgovor==id_komentar)
+    const ids_za_brisanje= [id_komentar]
+
+    for(let i=0; i<ids_za_brisanje.length; i++){
+        const odgovori= komentari.filter(k => k.odgovor==ids_za_brisanje[i])
+        for(let o of odgovori){
+            ids_za_brisanje.push(o.id)
+        }
+    }
+
+    console.log(komentari)
 
 
-    komentari.splice(index, 1)
+    const novi_komentari= komentari.filter(k => !ids_za_brisanje.includes(k.id))
+
+    komentari.length=0
+
+    komentari.push(...novi_komentari)
+
+
+    console.log(komentari)
+
+
+    return res.status(204).json({odgovor: 'Uspješno obrisan komentar'})
 })
 
 
