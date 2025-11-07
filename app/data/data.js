@@ -149,9 +149,9 @@ export let ocjene = [
   },
   {
     id: 5,
-    id_recept: 5,
+    id_recept: 1,
     id_korisnik: 5,
     zvjezdice: 4,
-    komentar: "Rižoto je ukusan, samo sam koristio malo manje maslaca."
+    komentar: "Palačinkesu dobre samo bi mogle biti bolje."
   }
 ]
