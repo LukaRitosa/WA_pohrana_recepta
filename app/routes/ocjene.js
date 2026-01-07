@@ -38,6 +38,28 @@ router.get('/recept/:id', (req, res)=>{
     return res.status(200).json({recept, ocjene: ocjene_za_recept})
 })
 
+router.get('/recept/:id/avg', (req, res)=>{
+    const id_recept= req.params.id
+
+    const recept= recepti.find(r => r.id == id_recept)
+
+    if(!recept){
+        return res.status(404).json({greska: `Recept sa id-em ${id_recept} ne postoji`})
+    }
+
+    const ocjene_za_recept= ocjene.filter(o => o.id_recept == id_recept)
+
+    if(ocjene_za_recept.length==0){
+        return res.status(200).json({recept, prosjek: null, brojOcjena: 0})
+    }
+
+    const suma= ocjene_za_recept.reduce((ukupno, o)=> ukupno + o.zvjezdice, 0)
+
+    const prosjek= Number((suma/ocjene_za_recept.length).toFixed(1))
+
+    return res.status(200).json({recept, prosjek, brojOcjena: ocjene_za_recept.length})
+})
+
 router.post('/', (req, res)=>{
     const nova_ocjena=req.body
 

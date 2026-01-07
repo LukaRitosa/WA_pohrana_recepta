@@ -36,7 +36,7 @@ router.post('/', (req, res)=>{
 
     const novi_id= korisnici.at(-1)['id'] + 1 
 
-    korisnici.push({id: novi_id, ... novi_korisnik})
+    korisnici.push({id: novi_id, ime:novi_korisnik.ime, prezime:novi_korisnik.prezime, email:novi_korisnik.email})
 
     return res.status(201).json(korisnici)
 })
