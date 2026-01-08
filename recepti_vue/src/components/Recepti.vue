@@ -6,6 +6,9 @@
 
     const recepti = ref([])
     const korisnici = ref([])
+    const prosjeci = ref({})
+    const brojOcjena = ref({})
+
   
 
     onMounted(async()=>{ 
@@ -13,6 +16,7 @@
             fetchRecepti(),
             fetchKorisnici(),
         ])
+        fetchAvg()
     })
 
 
@@ -42,6 +46,27 @@
         return korisnik ? `${korisnik.ime} ${korisnik.prezime}` : 'Nepoznat autor'
     }
 
+    async function fetchAvg(){
+        for(const recept of recepti.value){
+            const rez= await axios.get(
+                `http://localhost:3000/ocjene/recept/${recept.id}/avg`
+            )
+
+            prosjeci.value[recept.id]= rez.data.prosjek
+            brojOcjena.value[recept.id]= rez.data.brojOcjena
+        }
+    }
+
+    function zvjezdice(prosjek){
+        if(prosjek===null) return 
+
+        const pune= Math.floor(prosjek)
+        const pola= prosjek - pune >= 0.5 ? 1:0
+        const prazne= 5- pune - pola
+
+        return '★'.repeat(pune) + (pola ? '⯪': '') + '☆'.repeat(prazne)
+    }
+
 
 </script>
 
@@ -53,10 +78,23 @@
                 <p class="text-sm text-gray-400 mb-1">
                     {{ autorRecepta(recept.id_korisnik) }}
                 </p>
+
+                <p class="text-yellow-500 text-sm mb-1">
+                    <span v-if="prosjeci[recept.id]!== null">
+                        {{ zvjezdice(prosjeci[recept.id]) }}
+                        <span class="text-gray-500 ml-1">
+                            {{ prosjeci[recept.id] }}/5 ({{ brojOcjena[recept.id] }} ocjena)
+                        </span>
+                    </span>
+
+                    <span v-else>
+                        Nema ocjena
+                    </span>
+                </p>
                 
-                <h2 class="text-2xl font-bold text-orange-600 mb-2">
+                <RouterLink :to="`/${recept.id}`" class="text-2xl font-bold text-orange-600 mb-2 hover:text-orange-300">
                     {{ recept.naziv }}
-                </h2>
+                </RouterLink>
 
                 <span class="inline-block w-fit mb-4 px-3 py-1 text-sm font-semibold text-orange-700 bg-orange-100 rounded-full">
                     {{ recept.kategorija }}
