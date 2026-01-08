@@ -1,5 +1,5 @@
 import express from 'express';
-import { komentari, ocjene, recepti } from '../data/data.js'
+import { komentari, ocjene, recepti, korisnici } from '../data/data.js'
 const router = express.Router();
 
 
@@ -58,6 +58,24 @@ router.get('/recept/:id/avg', (req, res)=>{
     const prosjek= Number((suma/ocjene_za_recept.length).toFixed(1))
 
     return res.status(200).json({recept, prosjek, brojOcjena: ocjene_za_recept.length})
+})
+
+router.get('/korisnik/:id', (req, res)=>{
+    const korisnik_id= req.params.id
+
+    const korisnik= korisnici.find(k=> k.id==korisnik_id)
+
+    if(!korisnik){
+        return res.status(404).json({Greska: 'Korisnik ne postoji'})
+    }
+
+    const korisnikove_ocjene= ocjene.filter(o => o.id_korisnik == korisnik_id)
+
+    if(korisnikove_ocjene.length==0){
+        return res.status(200).json({korisnik, ocjene: null})
+    }
+
+    return res.status(200).json({korisnik, ocjene: korisnikove_ocjene})
 })
 
 router.post('/', (req, res)=>{

@@ -72,14 +72,17 @@
 
 
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 p-8">
+    <div class="min-h-screen bg-gradient-to-br from-green-50 to-green-100 p-8">
+        <RouterLink to="/korisnici" class="self-start mb-4 text-green-600 hover:underline font-semibold">
+            Korisnici
+        </RouterLink>
         <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             <div v-for="recept in recepti" :key="recept.id" class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow p-6 flex flex-col">
                 <p class="text-sm text-gray-400 mb-1">
                     {{ autorRecepta(recept.id_korisnik) }}
                 </p>
 
-                <p class="text-yellow-500 text-sm mb-1">
+                <p class="text-green-500 text-sm mb-1">
                     <span v-if="prosjeci[recept.id]!== null">
                         {{ zvjezdice(prosjeci[recept.id]) }}
                         <span class="text-gray-500 ml-1">
@@ -92,11 +95,11 @@
                     </span>
                 </p>
                 
-                <RouterLink :to="`/${recept.id}`" class="text-2xl font-bold text-orange-600 mb-2 hover:text-orange-300">
+                <RouterLink :to="`/${recept.id}`" class="text-2xl font-bold text-green-600 mb-2 hover:text-green-300">
                     {{ recept.naziv }}
                 </RouterLink>
 
-                <span class="inline-block w-fit mb-4 px-3 py-1 text-sm font-semibold text-orange-700 bg-orange-100 rounded-full">
+                <span class="inline-block w-fit mb-4 px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
                     {{ recept.kategorija }}
                 </span>
 
